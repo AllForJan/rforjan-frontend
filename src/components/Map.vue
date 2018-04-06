@@ -1,6 +1,18 @@
 <template>
   <div class="Map">
-    <gmap-map class="Map__map" :center="center" :zoom="zoom"></gmap-map>
+    <gmap-map class="Map__map" :center="center" :zoom="zoom">
+
+      <gmap-marker
+        :key="index"
+        v-for="(m, index) in markers"
+        :position="m.position"
+        :clickable="true"
+        :draggable="true"
+        @click="center=m.position"
+      ></gmap-marker>
+
+
+    </gmap-map>
   </div>
 </template>
 
@@ -31,7 +43,12 @@
     data() {
       return {
         center: {lat: 48.14816, lng: 17.10674},
-        zoom: 7
+        zoom: 7,
+        markers: [{
+          position: {lat: 50, lng: 14}
+        }, {
+          position: {lat: 11.0, lng: 11.0}
+        }]
       }
     },
 
