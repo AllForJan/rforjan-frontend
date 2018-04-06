@@ -13,6 +13,11 @@
 
 
     </gmap-map>
+    <gmap-map class="Map__map" :center="center" :zoom="zoom"></gmap-map>
+
+    <div class="Map__loadingOverlay" v-if="isLoading">
+      <Spinner size="large" />
+    </div>
   </div>
 </template>
 
@@ -33,15 +38,18 @@
     }
   })
 
-  export default {
-    name: '',
+  import Spinner from './Spinner'
 
-    components: {},
+  export default {
+    components: {
+      Spinner
+    },
 
     props: {},
 
     data() {
       return {
+        isLoading: false,
         center: {lat: 48.14816, lng: 17.10674},
         zoom: 7,
         markers: [{
@@ -55,12 +63,22 @@
     computed: {},
 
     methods: {},
+
+    mounted() {
+      this.isLoading = true;
+
+      setTimeout(() => {
+        this.isLoading = false
+      }, 1000)
+    }
   }
 </script>
 
 <style lang="scss" scoped>
   .Map {
     flex: 1 1 auto;
+
+    position: relative;
 
     display: flex;
     flex-flow: column;
@@ -69,5 +87,19 @@
 
   .Map__map {
     flex: 1 1 auto;
+  }
+
+  .Map__loadingOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(black, .1);
   }
 </style>
