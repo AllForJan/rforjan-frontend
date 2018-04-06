@@ -1,23 +1,30 @@
 <template>
   <div class="TheHeader">
-    <router-link :to="{name: 'home'}">
-      #RFORJAN
-    </router-link>
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <router-link class="navbar-brand" :to="{name: 'home'}">
+        #RFORJAN
+      </router-link>
 
-    <router-link :to="{name: 'home'}">
-      Home
-    </router-link>
+      <div class="navbar-nav">
+        <div class="nav-item">
+          <router-link class="nav-link" :to="{name: 'home'}">
+            Home
+          </router-link>
+        </div>
 
-    <router-link :to="{name: 'map'}">
-      Map view
-    </router-link>
+        <div class="nav-item">
+          <router-link class="nav-link" :to="{name: 'map'}">
+            Map view
+          </router-link>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   export default {
-    components: {
-    },
+    components: {},
 
     props: {},
 
