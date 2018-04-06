@@ -13,11 +13,11 @@
 
 
     </gmap-map>
-    <gmap-map class="Map__map" :center="center" :zoom="zoom"></gmap-map>
 
     <div class="Map__loadingOverlay" v-if="isLoading">
       <Spinner size="large" />
     </div>
+    
   </div>
 </template>
 
