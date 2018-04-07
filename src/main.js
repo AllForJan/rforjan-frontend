@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import fontawesome from '@fortawesome/fontawesome'
 import freeSolidIcons from '@fortawesome/fontawesome-free-solid'
+import store from './store'
 
 fontawesome.library.add(freeSolidIcons)
 
@@ -31,6 +32,7 @@ Vue.use(VueGoogleMaps, {
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

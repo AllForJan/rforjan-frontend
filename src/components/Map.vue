@@ -31,6 +31,8 @@
 </template>
 
 <script>
+  import {mapState, mapActions} from 'vuex'
+
   import Geodezy from '../services/Geodezy'
   import FakeAPI from '../services/FakeAPI'
 
@@ -69,6 +71,10 @@
     },
 
     computed: {
+      ...mapState([
+        'ziadost'
+      ]),
+
       geoJSONs_converted: function () {
 
         return this.geoJSONs.map((geoJSON)=>{
@@ -83,6 +89,10 @@
     },
 
     methods: {
+      ...mapActions([
+        'storeZiadost'
+      ]),
+
       recomputeBoundaries(e) {
         this.bounds = extractBounds(e)
       },
@@ -117,15 +127,14 @@
       },
 
       async handleClick(e) {
+        // this.setPoint(e);
+        // const latLng = extractLatLng(e.latLng)
+        // const result = await Geodezy.getParcel(latLng)
+        //
+        // this.geoJSONs=[await FakeAPI.getDummyGeoJSON(latLng)];
 
-        this.setPoint(e);
-        const latLng = extractLatLng(e.latLng)
-        const result = await Geodezy.getParcel(latLng)
-
-        this.geoJSONs=[await FakeAPI.getDummyGeoJSON(latLng)];
-
-        //const result = await Geodezy.lookParcel(latLng)
-        //console.log('result', result)
+        // const result = await Geodezy.lookParcel(latLng)
+        // console.log('result', result)
       }
     },
 
