@@ -7,6 +7,14 @@
       @idle="updateOverlays($event)"
       @bounds_changed="updateBounds($event)"
       @click="handleClick($event)"
+    >
+      <div v-for="geoJSON_converted in geoJSONs_converted" :key="geoJSON_converted.key">
+          <gmap-polygon :paths="geoJSON_converted.paths" :editable="false"  @click="setPoint($event)"
+          ref="polygon">
+      </gmap-polygon>
+      </div>
+
+    </gmap-map>
     />
 
     <VupopOverlay class="Map__vupopOverlay"
@@ -24,6 +32,7 @@
 
 <script>
   import Geodezy from '../services/Geodezy'
+  import FakeAPI from '../services/FakeAPI'
 
   import Spinner from './Spinner'
   import VupopOverlay from './VupopOverlay'
@@ -51,13 +60,50 @@
         bounds: null,
         isLoading: false,
         center: {lat: 49.06394971960525, lng: 21.191732156604985},
-        zoom: 15
+        zoom: 15,
+        markers: [{
+          position: {lat: 0, lng: 0}
+        }],
+        geoJSONs: []
       }
     },
 
-    computed: {},
+    computed: {
+      geoJSONs_converted: function () {
+
+        return this.geoJSONs.map((geoJSON)=>{
+          const paths = geoJSON.features[0].geometry.coordinates[0].map((coordinate)=>({lat: coordinate[1], lng: coordinate[0]}));
+          return {
+            key: Math.random(),//todo better
+            paths
+          };
+        });
+
+      }
+    },
 
     methods: {
+      recomputeBoundaries(e) {
+        this.bounds = extractBounds(e)
+      },
+      setPoint(e){
+        const center = this.markers[0].position;
+
+
+
+        center.lat = e.latLng.lat();
+        center.lng = e.latLng.lng();
+
+        console.log(center.lat,center.lng);
+
+        this.paths=[
+          {lat: center.lat-1, lng: center.lng-1},
+          {lat: center.lat+1, lng: center.lng-1},
+          {lat: center.lat+1, lng: center.lng+1},
+          {lat: center.lat-1, lng: center.lng+1}
+        ];
+      },
+
       updateBounds(e) {
         const center = extractLatLng(e.getCenter())
 
@@ -71,10 +117,15 @@
       },
 
       async handleClick(e) {
+
+        this.setPoint(e);
         const latLng = extractLatLng(e.latLng)
         const result = await Geodezy.getParcel(latLng)
 
-        console.log('result', result)
+        this.geoJSONs=[await FakeAPI.getDummyGeoJSON(latLng)];
+
+        //const result = await Geodezy.lookParcel(latLng)
+        //console.log('result', result)
       }
     },
 
