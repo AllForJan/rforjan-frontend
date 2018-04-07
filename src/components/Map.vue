@@ -7,6 +7,7 @@
       @idle="updateOverlays($event)"
       @bounds_changed="updateBounds($event)"
       @click="handleClick($event)"
+      ref="map"
     >
       <div v-if="selectedKulturnyDiel">
         <gmap-polygon
@@ -21,7 +22,7 @@
 
     <VupopOverlay class="Map__vupopOverlay"
       :bounds="bounds"
-      :size="{width: 986, height: 398}"
+      :size="size"
       v-if="bounds"
     />
 
@@ -81,6 +82,11 @@
       ...mapState([
         'ziadost'
       ]),
+
+      size() {
+        const {clientWidth: width, clientHeight: height} = this.$refs.map.$el
+        return {width, height}
+      },
 
       geoJSONs_converted: function () {
 
