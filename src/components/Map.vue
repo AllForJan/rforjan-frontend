@@ -4,19 +4,10 @@
       type="terrain"
       :center="center"
       :zoom="zoom"
-      @idle="updateOverlays()"
+      @idle="updateOverlays($event)"
       @bounds_changed="updateBounds($event)"
       @click="handleClick($event)"
-    >
-      <gmap-marker
-        :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        :clickable="true"
-        :draggable="true"
-        @click="center=m.position"
-      />
-    </gmap-map>
+    />
 
     <VupopOverlay class="Map__vupopOverlay"
       :bounds="bounds"
@@ -42,12 +33,10 @@
     lng: latLng.lng()
   })
 
-  const extractBounds = (bounds) => {
-    return {
-      northEast: extractLatLng(bounds.getNorthEast()),
-      southWest: extractLatLng(bounds.getSouthWest()),
-    }
-  }
+  const extractBounds = (bounds) => ({
+    northEast: extractLatLng(bounds.getNorthEast()),
+    southWest: extractLatLng(bounds.getSouthWest()),
+  })
 
   export default {
     components: {
@@ -61,19 +50,8 @@
       return {
         bounds: null,
         isLoading: false,
-        center: {lat: 48.743622, lng: 18.913816},
-        zoom: 8,
-        markers: [{
-          position: {lat: 50, lng: 14}
-        }, {
-          position: {lat: 11.0, lng: 11.0}
-        }],
-        paths: [
-          {lat: 50, lng: 14},
-          {lat: 50, lng: 18},
-          {lat: 47, lng: 18},
-          {lat: 47, lng: 14}
-        ]
+        center: {lat: 49.06394971960525, lng: 21.191732156604985},
+        zoom: 15
       }
     },
 
@@ -81,6 +59,10 @@
 
     methods: {
       updateBounds(e) {
+        const center = extractLatLng(e.getCenter())
+
+        console.log('center', center)
+
         this.tmpBounds = extractBounds(e)
       },
 
@@ -90,7 +72,7 @@
 
       async handleClick(e) {
         const latLng = extractLatLng(e.latLng)
-        const result = await Geodezy.lookParcel(latLng)
+        const result = await Geodezy.getParcel(latLng)
 
         console.log('result', result)
       }

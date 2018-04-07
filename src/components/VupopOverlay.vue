@@ -8,10 +8,6 @@
   import Vupop from '../services/Vupop'
 
   export default {
-    name: '',
-
-    components: {},
-
     props: {
       bounds: true,
       size: true
