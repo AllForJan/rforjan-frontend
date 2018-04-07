@@ -10,14 +10,27 @@
       ref="map"
     >
       <div v-if="selectedKulturnyDiel">
+        <!--Kulturne diely-->
         <gmap-polygon
           v-for="(paths, $index) in selectedKulturnyDiel.geometry.rings"
           :paths="paths"
           :editable="false"
-          :key="$index"
-          @click="setPoint($event)"
+          :key="`ud{$index}`"
+          :options="{fillColor: 'yellow', strokeWeight: '1', strokeColor: 'yellow', pointerEvents: 'none'}"
+        />
+
+        <gmap-polygon
+          v-for="(parcel, $index) in parcels"
+          :paths="parcel.latLonShape"
+          :editable="false"
+          :key="`p${$index}`"
+          :options="{strokeWeight: '1'}"
+          @click="selectParcel(parcel)"
         />
       </div>
+
+      <!--<MapGroundOverlay :source="vupopOverlaySrc" v-if="bounds" :bounds="bounds" :opacity="0.5">-->
+      <!--</MapGroundOverlay>-->
     </gmap-map>
 
     <VupopOverlay class="Map__vupopOverlay"
@@ -38,10 +51,12 @@
 
   import Geodezy from '../services/Geodezy'
   import Vupop from '../services/Vupop'
+  import Service from '../services/Service'
   import FakeAPI from '../services/FakeAPI'
 
   import Spinner from './Spinner'
   import VupopOverlay from './VupopOverlay'
+  import MapGroundOverlay from './MapGroundOverlay'
 
   const extractLatLng = (latLng) => ({
     lat: latLng.lat(),
@@ -56,7 +71,8 @@
   export default {
     components: {
       Spinner,
-      VupopOverlay
+      VupopOverlay,
+      MapGroundOverlay
     },
 
     props: {
@@ -66,6 +82,7 @@
       return {
         selectedKulturnyDiel: null,
         isLoadingKulturnyDiel: false,
+        parcels: [],
 
         bounds: null,
         isLoading: false,
@@ -88,6 +105,10 @@
         return {width, height}
       },
 
+      vupopOverlaySrc() {
+        return this.bounds && Vupop.getMapTile(this.bounds, this.size);
+      },
+
       geoJSONs_converted: function () {
 
         return this.geoJSONs.map((geoJSON)=>{
@@ -106,29 +127,7 @@
         'storeZiadost'
       ]),
 
-      setPoint(e){
-        const center = this.markers[0].position;
-
-
-
-        center.lat = e.latLng.lat();
-        center.lng = e.latLng.lng();
-
-        console.log(center.lat,center.lng);
-
-        this.paths=[
-          {lat: center.lat-1, lng: center.lng-1},
-          {lat: center.lat+1, lng: center.lng-1},
-          {lat: center.lat+1, lng: center.lng+1},
-          {lat: center.lat-1, lng: center.lng+1}
-        ];
-      },
-
       updateBounds(e) {
-        const center = extractLatLng(e.getCenter())
-
-        console.log('center', center)
-
         this.tmpBounds = extractBounds(e)
       },
 
@@ -136,18 +135,36 @@
         this.bounds = this.tmpBounds
       },
 
+      async loadParcels(kulturnyDiel) {
+        const {LOKALITA, ZKODKD} = kulturnyDiel.attributes
+        const parcels = (await Service.getParcelyForUzemnyDiel(LOKALITA, ZKODKD))
+          .map((parcel) => {
+            parcel.latLonShape = parcel.latLonShape.map(([lat, lng]) => ({lat, lng}))
+            return parcel
+          })
+
+        return parcels
+      },
+
       async handleClick(e) {
+        const latLng = extractLatLng(e.latLng)
+
         this.isLoadingKulturnyDiel = true
+        this.selectedKulturnyDiel = null
+        this.parcels = []
 
         try {
-          const latLng = extractLatLng(e.latLng)
           this.selectedKulturnyDiel = await Vupop.lookupKulturnyDiel(latLng)
+          this.parcels = await this.loadParcels(this.selectedKulturnyDiel)
         } catch (e) {
           console.error(e)
-          this.selectedKulturnyDiel = null
         } finally {
           this.isLoadingKulturnyDiel = false
         }
+      },
+
+      selectParcel(parcel) {
+        alert(parcel.parcel_number)
       }
     },
 

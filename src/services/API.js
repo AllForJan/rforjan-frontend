@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE = 'http://138.68.66.142:4000'
+const API_BASE = 'http://138.68.66.142:3333'
 
 const getUrl = (path) => {
   return `${API_BASE}/${path}`
