@@ -1,13 +1,14 @@
-import {convertToJTSK} from '../utils/converter'
+import {convert4326To5514, convert5514To4326} from '../utils/converter'
 import {stringifyQueryParams} from '../utils/makeUrl'
 import axios from 'axios'
 
 const KULTURNE_DIELY_URL = 'http://portal.vupop.sk/arcgis/rest/services/LPIS/Kulturne_diely/MapServer'
+const VEREJNOST_URL = 'http://portal.vupop.sk/arcgis/rest/services/LPIS/LPIS_verejnost/MapServer'
 
 export default {
   getMapTile(bounds, size) {
-    const northEast = convertToJTSK(bounds.northEast)
-    const southWest = convertToJTSK(bounds.southWest)
+    const northEast = convert4326To5514(bounds.northEast)
+    const southWest = convert4326To5514(bounds.southWest)
 
     const bbox = [northEast.x, northEast.y, southWest.x, southWest.y];
     const {width, height} = size
@@ -24,13 +25,13 @@ export default {
       f: 'image'
     }
 
-    const url = `${KULTURNE_DIELY_URL}/export?${stringifyQueryParams(params)}`
+    const url = `${VEREJNOST_URL}/export?${stringifyQueryParams(params)}`
 
     return url;
   },
 
   async lookupKulturnyDiel(latLng) {
-    const geometry = convertToJTSK(latLng)
+    const geometry = convert4326To5514(latLng)
     const mapExtent = [
       -391315.6707205146,
       -1182782.0263571497,
@@ -58,6 +59,17 @@ export default {
     const kulturnyDiel = response.data &&
       response.data.results &&
       response.data.results[0]
+
+    if (!kulturnyDiel) {
+      return
+    }
+
+    kulturnyDiel.geometry.rings = kulturnyDiel.geometry.rings.map((ring) => {
+      return ring.map((coordinates) => {
+        const [x, y] = coordinates
+        return convert5514To4326({x, y})
+      })
+    })
 
     return kulturnyDiel
   }

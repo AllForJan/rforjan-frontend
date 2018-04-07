@@ -1,4 +1,4 @@
-import {convertToMercator} from '../utils/converter'
+import {convert4326To3857} from '../utils/converter'
 import makeUrl from '../utils/makeUrl'
 import axios from 'axios'
 
@@ -12,15 +12,13 @@ const FULL_MAP_EXTEND = [
   6396945.299809758,
 ].join(',')
 
-const getUrl = (path, props = {}) => makeUrl(`${BASE_URL}/${path}`, props)
-
 const serializeImageDisplay = ({width, height, dpi}) => {
   return [width, height, dpi].join(',')
 }
 
 export default {
   async findParcelNumber(latLng) {
-    const geometry = convertToMercator(latLng)
+    const geometry = convert4326To3857(latLng)
 
     const imageDisplay = serializeImageDisplay({
       width: 1000,

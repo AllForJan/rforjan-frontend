@@ -9,12 +9,20 @@ proj4.defs('EPSG:5514', '+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alph
 
 proj.setProj4(proj4)
 
-export function convertToMercator({lat, lng}) {
+// COnvert to Pseudo Mercator
+export function convert4326To3857({lat, lng}) {
   const [x, y] = proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857');
   return {x, y}
 }
 
-export function convertToJTSK({lat, lng}) {
+// convert to JTSK
+export function convert4326To5514({lat, lng}) {
   const [x, y] = proj.transform([lng, lat], 'EPSG:4326', 'EPSG:5514')
   return {x, y}
+}
+
+// convert to WGS84 from JTSK
+export function convert5514To4326({x, y}) {
+  const [lng, lat] = proj.transform([x, y], 'EPSG:5514', 'EPSG:4326')
+  return {lat, lng}
 }

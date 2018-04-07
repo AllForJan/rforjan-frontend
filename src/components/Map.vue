@@ -8,14 +8,16 @@
       @bounds_changed="updateBounds($event)"
       @click="handleClick($event)"
     >
-      <div v-for="geoJSON_converted in geoJSONs_converted" :key="geoJSON_converted.key">
-          <gmap-polygon :paths="geoJSON_converted.paths" :editable="false"  @click="setPoint($event)"
-          ref="polygon">
-      </gmap-polygon>
+      <div v-if="selectedKulturnyDiel">
+        <gmap-polygon
+          v-for="(paths, $index) in selectedKulturnyDiel.geometry.rings"
+          :paths="paths"
+          :editable="false"
+          :key="$index"
+          @click="setPoint($event)"
+        />
       </div>
-
     </gmap-map>
-    />
 
     <VupopOverlay class="Map__vupopOverlay"
       :bounds="bounds"
@@ -56,10 +58,14 @@
       VupopOverlay
     },
 
-    props: {},
+    props: {
+    },
 
     data() {
       return {
+        selectedKulturnyDiel: null,
+        isLoadingKulturnyDiel: false,
+
         bounds: null,
         isLoading: false,
         center: {lat: 49.06394971960525, lng: 21.191732156604985},
@@ -94,9 +100,6 @@
         'storeZiadost'
       ]),
 
-      recomputeBoundaries(e) {
-        this.bounds = extractBounds(e)
-      },
       setPoint(e){
         const center = this.markers[0].position;
 
@@ -128,9 +131,17 @@
       },
 
       async handleClick(e) {
-        const latLng = extractLatLng(e.latLng)
-        const result = await Vupop.lookupKulturnyDiel(latLng)
-        console.log('result', result)
+        this.isLoadingKulturnyDiel = true
+
+        try {
+          const latLng = extractLatLng(e.latLng)
+          this.selectedKulturnyDiel = await Vupop.lookupKulturnyDiel(latLng)
+        } catch (e) {
+          console.error(e)
+          this.selectedKulturnyDiel = null
+        } finally {
+          this.isLoadingKulturnyDiel = false
+        }
       }
     },
 
