@@ -8,15 +8,12 @@
         :clickable="true"
         :draggable="true"
         @click="center=m.position"
-      ></gmap-marker>
+      />
 
       <gmap-polygon v-if="paths.length > 0" :paths="paths" :editable="true" @paths_changed="updateEdited($event)"
           @rightclick="handleClickForDelete"
           ref="polygon">
       </gmap-polygon>
-
-
-      />
     </gmap-map>
 
     <VupopOverlay class="Map__vupopOverlay"
@@ -28,7 +25,7 @@
     <div class="Map__loadingOverlay" v-if="isLoading">
       <Spinner size="large" />
     </div>
-    
+
   </div>
 </template>
 
