@@ -1,7 +1,6 @@
 <template>
   <div class="Map">
     <gmap-map class="Map__map" :center="center" :zoom="zoom">
-
       <gmap-marker
         :key="index"
         v-for="(m, index) in markers"
@@ -9,11 +8,8 @@
         :clickable="true"
         :draggable="true"
         @click="center=m.position"
-      ></gmap-marker>
-
-
+      />
     </gmap-map>
-    <gmap-map class="Map__map" :center="center" :zoom="zoom"></gmap-map>
 
     <div class="Map__loadingOverlay" v-if="isLoading">
       <Spinner size="large" />

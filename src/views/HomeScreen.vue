@@ -1,19 +1,27 @@
 <template>
-  <div class="HomeScreen">
-    HOME
+  <div class="HomeScreen py-5">
+    <div class="container">
+
+      <OmniSerach v-model="searchQuery" />
+
+    </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: '',
+  import OmniSerach from '../components/OmniSerach'
 
-    components: {},
+  export default {
+    components: {
+      OmniSerach
+    },
 
     props: {},
 
     data() {
-      return {}
+      return {
+        searchQuery: ''
+      }
     },
 
     computed: {},
