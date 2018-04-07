@@ -1,6 +1,6 @@
 <template>
   <div class="Map">
-    <gmap-map class="Map__map" :center="center" :zoom="zoom">
+    <gmap-map class="Map__map" type="terrain" :center="center" :zoom="zoom" @bounds_changed="recomputeBoundaries($event)">
       <gmap-marker
         :key="index"
         v-for="(m, index) in markers"
@@ -10,6 +10,12 @@
         @click="center=m.position"
       />
     </gmap-map>
+
+    <VupopOverlay class="Map__vupopOverlay"
+      :bounds="bounds"
+      :size="{width: 986, height: 398}"
+      v-if="bounds"
+    />
 
     <div class="Map__loadingOverlay" v-if="isLoading">
       <Spinner size="large" />
@@ -35,16 +41,31 @@
   })
 
   import Spinner from './Spinner'
+  import VupopOverlay from './VupopOverlay'
+
+  const extractBounds = (bounds) => {
+    const convert = (point) => ({
+      lat: point.lat(),
+      lng: point.lng()
+    })
+
+    return {
+      northEast: convert(bounds.getNorthEast()),
+      southWest: convert(bounds.getSouthWest()),
+    }
+  }
 
   export default {
     components: {
-      Spinner
+      Spinner,
+      VupopOverlay
     },
 
     props: {},
 
     data() {
       return {
+        bounds: null,
         isLoading: false,
         center: {lat: 48.14816, lng: 17.10674},
         zoom: 7,
@@ -58,7 +79,11 @@
 
     computed: {},
 
-    methods: {},
+    methods: {
+      recomputeBoundaries(e) {
+        this.bounds = extractBounds(e)
+      }
+    },
 
     mounted() {
       this.isLoading = true;
@@ -83,6 +108,16 @@
 
   .Map__map {
     flex: 1 1 auto;
+  }
+
+  .Map__vupopOverlay,
+  .Map__vupopOverlay.VupopOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
   }
 
   .Map__loadingOverlay {
