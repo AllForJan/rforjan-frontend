@@ -65,8 +65,10 @@
     "bootstrap": "^4.0.0",
     "d3": "^5.0.0",
     "element-ui": "^2.3.3",
+    "jtsk2wgs84": "^1.0.0",
     "node-sass": "^4.8.3",
     "ol": "^4.6.5",
+    "proj4": "^2.4.4",
     "sass-loader": "^6.0.7",
     "vue2-google-maps": "^0.8.11",
     "vuex": "^3.0.1"

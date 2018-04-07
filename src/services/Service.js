@@ -5,3 +5,4 @@ export default {
     return API.get(`diel/info?diel=${id}`)
   }
 }
+

@@ -1,6 +1,13 @@
 <template>
   <div class="Map">
-    <gmap-map class="Map__map" type="terrain" :center="center" :zoom="zoom" @bounds_changed="recomputeBoundaries($event)">
+    <gmap-map class="Map__map"
+      type="terrain"
+      :center="center"
+      :zoom="zoom"
+      @idle="updateOverlays()"
+      @bounds_changed="updateBounds($event)"
+      @click="handleClick($event)"
+    >
       <gmap-marker
         :key="index"
         v-for="(m, index) in markers"
@@ -9,11 +16,6 @@
         :draggable="true"
         @click="center=m.position"
       />
-
-      <gmap-polygon v-if="paths.length > 0" :paths="paths" :editable="true" @paths_changed="updateEdited($event)"
-          @rightclick="handleClickForDelete"
-          ref="polygon">
-      </gmap-polygon>
     </gmap-map>
 
     <VupopOverlay class="Map__vupopOverlay"
@@ -30,34 +32,20 @@
 </template>
 
 <script>
-  const GOOGLE_MAPS_API_KEY = 'AIzaSyDcJh16iZXgo9jQz94XJ3W2BsPJ29xt-Gk'
-
-  import Vue from 'vue'
-  import * as VueGoogleMaps from 'vue2-google-maps'
-
-  Vue.use(VueGoogleMaps, {
-    load: {
-      key: GOOGLE_MAPS_API_KEY,
-      // libraries: 'places,drawing,visualization'
-      // libraries: 'places', // This is required if you use the Autocomplete plugin
-      // OR: libraries: 'places,drawing'
-      // OR: libraries: 'places,drawing,visualization'
-      // (as you require)
-    }
-  })
+  import Geodezy from '../services/Geodezy'
 
   import Spinner from './Spinner'
   import VupopOverlay from './VupopOverlay'
 
-  const extractBounds = (bounds) => {
-    const convert = (point) => ({
-      lat: point.lat(),
-      lng: point.lng()
-    })
+  const extractLatLng = (latLng) => ({
+    lat: latLng.lat(),
+    lng: latLng.lng()
+  })
 
+  const extractBounds = (bounds) => {
     return {
-      northEast: convert(bounds.getNorthEast()),
-      southWest: convert(bounds.getSouthWest()),
+      northEast: extractLatLng(bounds.getNorthEast()),
+      southWest: extractLatLng(bounds.getSouthWest()),
     }
   }
 
@@ -73,8 +61,8 @@
       return {
         bounds: null,
         isLoading: false,
-        center: {lat: 48.14816, lng: 17.10674},
-        zoom: 7,
+        center: {lat: 48.743622, lng: 18.913816},
+        zoom: 8,
         markers: [{
           position: {lat: 50, lng: 14}
         }, {
@@ -92,8 +80,19 @@
     computed: {},
 
     methods: {
-      recomputeBoundaries(e) {
-        this.bounds = extractBounds(e)
+      updateBounds(e) {
+        this.tmpBounds = extractBounds(e)
+      },
+
+      updateOverlays() {
+        this.bounds = this.tmpBounds
+      },
+
+      async handleClick(e) {
+        const latLng = extractLatLng(e.latLng)
+        const result = await Geodezy.lookParcel(latLng)
+
+        console.log('result', result)
       }
     },
 

@@ -12,6 +12,21 @@ import './assets/styles/app.scss'
 
 Vue.config.productionTip = false
 
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDcJh16iZXgo9jQz94XJ3W2BsPJ29xt-Gk'
+
+import * as VueGoogleMaps from 'vue2-google-maps'
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: GOOGLE_MAPS_API_KEY,
+    // libraries: 'places,drawing,visualization'
+    // libraries: 'places', // This is required if you use the Autocomplete plugin
+    // OR: libraries: 'places,drawing'
+    // OR: libraries: 'places,drawing,visualization'
+    // (as you require)
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
