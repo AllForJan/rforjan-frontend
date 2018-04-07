@@ -11,6 +11,11 @@
         @click="center=m.position"
       ></gmap-marker>
 
+      <gmap-polygon v-if="paths.length > 0" :paths="paths" :editable="true" @paths_changed="updateEdited($event)"
+          @rightclick="handleClickForDelete"
+          ref="polygon">
+      </gmap-polygon>
+
 
     </gmap-map>
 
@@ -56,7 +61,13 @@
           position: {lat: 50, lng: 14}
         }, {
           position: {lat: 11.0, lng: 11.0}
-        }]
+        }],
+        paths: [
+          {lat: 50, lng: 14},
+          {lat: 50, lng: 18},
+          {lat: 47, lng: 18},
+          {lat: 47, lng: 14}
+        ]
       }
     },
 
