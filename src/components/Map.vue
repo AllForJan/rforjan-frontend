@@ -1,6 +1,6 @@
 <template>
   <div class="Map">
-    <gmap-map class="Map__map" type="terrain" :center="center" :zoom="zoom" @bounds_changed="recomputeBoundaries($event)">
+    <gmap-map class="Map__map" type="terrain" :center="center" :zoom="zoom" @bounds_changed="recomputeBoundaries($event)" @click="setPoint($event)">
       <gmap-marker
         :key="index"
         v-for="(m, index) in markers"
@@ -10,8 +10,7 @@
         @click="center=m.position"
       />
 
-      <gmap-polygon v-if="paths.length > 0" :paths="paths" :editable="true" @paths_changed="updateEdited($event)"
-          @rightclick="handleClickForDelete"
+      <gmap-polygon v-if="paths.length > 0" :paths="paths" :editable="true" @paths_changed="updateEdited($event)"  @click="setPoint($event)"
           ref="polygon">
       </gmap-polygon>
     </gmap-map>
@@ -73,19 +72,12 @@
       return {
         bounds: null,
         isLoading: false,
-        center: {lat: 48.14816, lng: 17.10674},
-        zoom: 7,
+        center: {lat: 48.16235540438321 , lng:17.033876175146588},
+        zoom: 12,
         markers: [{
-          position: {lat: 50, lng: 14}
-        }, {
-          position: {lat: 11.0, lng: 11.0}
+          position: {lat: 0, lng: 0}
         }],
-        paths: [
-          {lat: 50, lng: 14},
-          {lat: 50, lng: 18},
-          {lat: 47, lng: 18},
-          {lat: 47, lng: 14}
-        ]
+        paths: []
       }
     },
 
@@ -94,6 +86,24 @@
     methods: {
       recomputeBoundaries(e) {
         this.bounds = extractBounds(e)
+      },
+      async setPoint(e){
+        const center = this.markers[0].position;
+
+        
+        
+        center.lat = e.latLng.lat();
+        center.lng = e.latLng.lng();
+
+        console.log(center.lat,center.lng);
+
+        this.paths=[
+          {lat: center.lat-1, lng: center.lng-1},
+          {lat: center.lat+1, lng: center.lng-1},
+          {lat: center.lat+1, lng: center.lng+1},
+          {lat: center.lat-1, lng: center.lng+1}
+        ];
+
       }
     },
 
