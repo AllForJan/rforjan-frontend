@@ -1,7 +1,6 @@
 <template>
   <div class="Map">
     <gmap-map class="Map__map" :center="center" :zoom="zoom">
-
       <gmap-marker
         :key="index"
         v-for="(m, index) in markers"
@@ -17,6 +16,7 @@
       </gmap-polygon>
 
 
+      />
     </gmap-map>
 
     <div class="Map__loadingOverlay" v-if="isLoading">
