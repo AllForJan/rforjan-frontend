@@ -174,10 +174,6 @@
     flex-flow: row;
   }
 
-  .Map__detail-opened {
-    flex: 2 1 auto;
-  }
-
   .Map__vupopOverlay,
   .Map__vupopOverlay.VupopOverlay {
     position: absolute;
