@@ -34,6 +34,7 @@
   import {mapState, mapActions} from 'vuex'
 
   import Geodezy from '../services/Geodezy'
+  import Vupop from '../services/Vupop'
   import FakeAPI from '../services/FakeAPI'
 
   import Spinner from './Spinner'
@@ -127,14 +128,9 @@
       },
 
       async handleClick(e) {
-        // this.setPoint(e);
-        // const latLng = extractLatLng(e.latLng)
-        // const result = await Geodezy.getParcel(latLng)
-        //
-        // this.geoJSONs=[await FakeAPI.getDummyGeoJSON(latLng)];
-
-        // const result = await Geodezy.lookParcel(latLng)
-        // console.log('result', result)
+        const latLng = extractLatLng(e.latLng)
+        const result = await Vupop.lookupKulturnyDiel(latLng)
+        console.log('result', result)
       }
     },
 

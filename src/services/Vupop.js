@@ -2,18 +2,15 @@ import {convertToJTSK} from '../utils/converter'
 import {stringifyQueryParams} from '../utils/makeUrl'
 import axios from 'axios'
 
-const BASE_URL = 'http://portal.vupop.sk/arcgis/rest/services/LPIS/Kulturne_diely/MapServer'
+const KULTURNE_DIELY_URL = 'http://portal.vupop.sk/arcgis/rest/services/LPIS/Kulturne_diely/MapServer'
 
 export default {
   getMapTile(bounds, size) {
-    const {width, height} = size
-
     const northEast = convertToJTSK(bounds.northEast)
     const southWest = convertToJTSK(bounds.southWest)
-    const bbox = [-northEast.x, -northEast.y, -southWest.x, -southWest.y];
 
-    //-371431.84653896734,-1185471.9128043288,-338292.7177607098,-1171779.6979198991
-    console.log(bbox)
+    const bbox = [northEast.x, northEast.y, southWest.x, southWest.y];
+    const {width, height} = size
 
     const params = {
       dpi: '96',
@@ -27,16 +24,41 @@ export default {
       f: 'image'
     }
 
-    const url = `${BASE_URL}/export?${stringifyQueryParams(params)}`
+    const url = `${KULTURNE_DIELY_URL}/export?${stringifyQueryParams(params)}`
 
     return url;
   },
 
-  // lookupKulturnyDiel({lat, lng}) {
-  //   const {x, y} = wgs84_to_jtsk(lat, lng)
-  //
-  //   return axios.get(getUrl(''), {
-  //     geometry: {x, y}
-  //   })
-  // }
+  async lookupKulturnyDiel(latLng) {
+    const geometry = convertToJTSK(latLng)
+    const mapExtent = [
+      -391315.6707205146,
+      -1182782.0263571497,
+      -388630.1445161288,
+      -1181758.0868092705
+    ].join(',')
+
+    console.log(geometry)
+
+    const params = {
+      geometry,
+      mapExtent,
+      geometryType: 'esriGeometryPoint',
+      returnGeometry: 'true',
+      imageDisplay: '1000,1000,96',
+      tolerance: '5',
+      f: 'json'
+    }
+
+    const response = await axios.get(`${KULTURNE_DIELY_URL}/identify`, {
+      responseType: 'json',
+      params
+    })
+
+    const kulturnyDiel = response.data &&
+      response.data.results &&
+      response.data.results[0]
+
+    return kulturnyDiel
+  }
 }

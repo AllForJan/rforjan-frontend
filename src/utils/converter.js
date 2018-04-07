@@ -16,5 +16,5 @@ export function convertToMercator({lat, lng}) {
 
 export function convertToJTSK({lat, lng}) {
   const [x, y] = proj.transform([lng, lat], 'EPSG:4326', 'EPSG:5514')
-  return {x: -x, y: -y}
+  return {x, y}
 }
