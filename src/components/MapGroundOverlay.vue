@@ -18,20 +18,33 @@
     },
 
     deferredReady() {
-      this.$overlay = new google.maps.GroundOverlay(this.source, {
-        north: this.bounds.northEast.lng,
-        south: this.bounds.southWest.lng,
-        east: this.bounds.northEast.lat,
-        west: this.bounds.southWest.lat,
-      });
+      this.updateOverlay()
+    },
 
-      this.$overlay.setOpacity(this.opacity);
-      this.$overlay.setMap(this.$map);
+    methods: {
+      updateOverlay() {
+        this.clearOverlay()
+
+        this.$overlay = new google.maps.GroundOverlay(this.source, this.bounds);
+        this.$overlay.setMap(this.$map);
+      },
+
+      clearOverlay() {
+        if (this.$overlay) {
+          this.$overlay.setMap(null)
+        }
+      }
     },
 
     destroyed() {
-      this.$overlay.setMap(null);
+      this.clearOverlay()
     },
+
+    watch: {
+      source() {
+        this.updateOverlay()
+      }
+    }
   }
 </script>
 
