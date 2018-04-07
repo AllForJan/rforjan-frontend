@@ -18,6 +18,10 @@ export default new Vuex.Store({
     }
   },
 
+  getters: {
+    ziadost: (state) => state.ziadost,
+  },
+
   mutations: {
     [TYPES.STORE_ZIADOST](state, {ziadost}) {
       state.ziadost = ziadost

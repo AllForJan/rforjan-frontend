@@ -1,6 +1,7 @@
 <template>
   <div class="Map">
-    <gmap-map class="Map__map"
+    <gmap-map
+      :class="['Map__map', { 'Map__detail-opened': true }]"
       type="terrain"
       :center="center"
       :zoom="zoom"
@@ -27,6 +28,7 @@
       <Spinner size="large" />
     </div>
 
+    <router-view />
   </div>
 </template>
 
@@ -35,6 +37,7 @@
 
   import Geodezy from '../services/Geodezy'
   import FakeAPI from '../services/FakeAPI'
+  import Service from '../services/Service'
 
   import Spinner from './Spinner'
   import VupopOverlay from './VupopOverlay'
@@ -66,7 +69,7 @@
         markers: [{
           position: {lat: 0, lng: 0}
         }],
-        geoJSONs: []
+        geoJSONs: [],
       }
     },
 
@@ -135,6 +138,13 @@
 
         // const result = await Geodezy.lookParcel(latLng)
         // console.log('result', result)
+        const dielId = '8002/1';
+        const lokalita = 'Ábelová';
+
+        const ziadosti = await Service.diel(dielId, lokalita)
+        this.storeZiadost(ziadosti);
+        const replacedId = dielId.replace('/', '-');
+        this.$router.push(`/mapa/${replacedId}`);
       }
     },
 
@@ -155,12 +165,17 @@
     position: relative;
 
     display: flex;
-    flex-flow: column;
+    flex-flow: row;
     align-items: stretch;
   }
 
   .Map__map {
     flex: 1 1 auto;
+    flex-flow: row;
+  }
+
+  .Map__detail-opened {
+    flex: 2 1 auto;
   }
 
   .Map__vupopOverlay,
