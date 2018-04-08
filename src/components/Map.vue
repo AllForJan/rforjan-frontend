@@ -1,7 +1,8 @@
 <template>
   <div class="Map">
     <gmap-map
-      :class="['Map__map', { 'Map__detail-opened': true }]"
+      class="Map__map"
+      :class="{isOpen: !!kulturnyDiel }"
       type="terrain"
       :center="center"
       :zoom="zoom"
@@ -11,7 +12,7 @@
       ref="map"
     >
 
-      <div v-if="kulturnyDiel">
+      <div v-if="!! kulturnyDiel">
         <!--Kulturne diely-->
         <gmap-polygon
           v-for="(paths, $index) in kulturnyDiel.geometry.rings"
@@ -40,7 +41,7 @@
 
     </gmap-map>
 
-    <router-view />
+    <Detail/>
   </div>
 </template>
 
@@ -51,6 +52,7 @@
   import Service from '../services/Service'
 
   import MapGroundOverlay from './MapGroundOverlay'
+  import Detail from './/Detail'
 
   const extractLatLng = (latLng) => ({
     lat: latLng.lat(),
@@ -64,7 +66,8 @@
 
   export default {
     components: {
-      MapGroundOverlay
+      MapGroundOverlay,
+      Detail
     },
 
     props: {},
