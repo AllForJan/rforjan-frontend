@@ -46,6 +46,7 @@
 
 <script>
   import {mapState, mapActions} from 'vuex'
+  import bus from '../bus'
 
   import Vupop from '../services/Vupop'
   import Service from '../services/Service'
@@ -139,7 +140,7 @@
       },
 
       selectParcel(parcel) {
-        alert(parcel.parcel_number)
+        bus.$emit('selectParcel', parcel)
       }
     },
 

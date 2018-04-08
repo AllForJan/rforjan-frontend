@@ -24,6 +24,15 @@ export default {
     const ziadosti = response.data
 
     return ziadosti
+  },
+
+  async loadEntity(entityId) {
+    const url = `${API_BASE_RAILS}/entity/info?entity_id=${entityId}`
+    const response = await axios.get(url)
+
+    const entity = response.data
+
+    return entity
   }
 }
 

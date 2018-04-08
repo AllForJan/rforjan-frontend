@@ -42,18 +42,19 @@ export default new Vuex.Store({
     detailTableData: (state) => {
       if (!state.ziadosti) return [];
       const years = Object.keys(state.ziadosti);
-      
+
       return years.map(year => {
-        const personIds = Object.keys(state.ziadosti[year]);
+        const entityIds = Object.keys(state.ziadosti[year]);
         const yearData = []
-        
-        personIds.forEach(personId => {
-          const personData = state.ziadosti[year][personId];
-          
-          personData.ziadosti.forEach(ziadost => {
+
+        entityIds.forEach(entityId => {
+          const entityData = state.ziadosti[year][entityId];
+
+          entityData.ziadosti.forEach(ziadost => {
             yearData.push({
               ...ziadost,
-              isPrijimatel: personData.prijimatelia.length ? 'Áno' : 'Nie',
+              entityId,
+              isPrijimatel: entityData.prijimatelia.length ? 'Áno' : 'Nie',
             })
           });
         });
