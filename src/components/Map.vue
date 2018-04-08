@@ -65,7 +65,6 @@
   export default {
     components: {
       Spinner,
-      VupopOverlay,
       MapGroundOverlay
     },
 
@@ -125,14 +124,14 @@
       },
 
       async handleClick(e) {
-        const {lat, lng} = e.latLng
+        const latLng = extractLatLng(e.latLng)
 
         this.isLoadingKulturnyDiel = true
         this.kulturnyDiel = null
         this.parcels = []
 
         try {
-          this.kulturnyDiel = await Vupop.lookupKulturnyDiel({lat, lng})
+          this.kulturnyDiel = await Vupop.lookupKulturnyDiel(latLng)
           this.parcels = await this.loadParcels(this.kulturnyDiel)
         } catch (e) {
           console.error(e)
@@ -169,16 +168,6 @@
 
   .Map__map {
     flex: 1 1 auto;
-  }
-
-  .Map__vupopOverlay,
-  .Map__vupopOverlay.VupopOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
   }
 
   .Map__loadingOverlay {
