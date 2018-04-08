@@ -26,12 +26,12 @@
             </h1>
 
             <el-tabs v-model="activeTab" @tab-click="handleSelectTab">
-              <el-tab-pane label="Žiadatelia" name="ziadatelia">
-                <el-table :data="tableData">
+              <el-tab-pane label="Žiadosti o dotácie" name="ziadatelia">
+                <el-table :data="tableData" cell-class-name="no-wrap" header-cell-class-name="no-wrap">
                   <el-table-column type="expand">
                     <template slot-scope="props">
                       <el-table :data="props.row.yearData">
-                        <el-table-column cell-class-name="no-wrap" label="Name" prop="ziadatel">
+                        <el-table-column class-name="no-break" label="Name" prop="ziadatel">
                           <template slot-scope="scope">
                             <a href @click.prevent="showEntityDetails(scope.row.entityId)">
                               {{ scope.row.ziadatel }}
@@ -39,29 +39,39 @@
                           </template>
                         </el-table-column>
 
-                        <el-table-column cell-class-name="no-wrap" label="ICO" prop="ico" />
+                        <el-table-column class-name="no-break" label="ICO" prop="ico" />
 
-                        <el-table-column cell-class-name="no-wrap" label="Počet žiadosti" prop="pocet_ziadosti" />
+                        <el-table-column class-name="no-break" label="Počet žiadosti" prop="pocet_ziadosti" />
 
-                        <el-table-column cell-class-name="no-wrap" label="Celková výmera" prop="celkova_vymera" />
+                        <el-table-column class-name="no-break" label="Celková výmera" prop="celkova_vymera" />
 
-                        <el-table-column cell-class-name="no-wrap" label="Prijimatel?" prop="isPrijimatel" />
+                        <el-table-column class-name="no-break" label="Prijimatel?" prop="isPrijimatel" />
                       </el-table>
                     </template>
                   </el-table-column>
+
                   <el-table-column label="Rok" prop="year"/>
+
+                  <el-table-column align="center" label="Počet žiadostí">
+                    <template slot-scope="scope">
+                      {{ Math.round(Math.random() * 10) }}
+                    </template>
+                  </el-table-column>
                 </el-table>
               </el-tab-pane>
 
-              <el-tab-pane label="Parcely" name="parcely">
+              <el-tab-pane label="Parcely s na KU" name="parcely">
 
               </el-tab-pane>
             </el-tabs>
           </el-col>
         </el-row>
       </div>
+
       <div v-else>
-        Vyberte si kulturny diel kliknutím na mapu
+        <div class="text-center py-5">
+          Vyberte si kulturny diel kliknutím na mapu
+        </div>
       </div>
     </div>
   </div>

@@ -14,9 +14,7 @@
       </div>
 
       <div class="ml-auto text-white">
-        <Spinner :is-white="true" v-if="isLoading">
-          Kľud, robim…
-        </Spinner>
+        <Spinner :is-white="true" v-if="isLoading" />
       </div>
     </div>
   </div>
