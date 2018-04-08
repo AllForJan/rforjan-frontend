@@ -1,5 +1,5 @@
 <template>
-  <div class="Detail">
+  <div class="Detail p-3">
     <el-row>
       <el-col :span="24">
         <h1>Detail</h1>
@@ -29,7 +29,7 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  
+
   export default {
     data: () => ({
       table: [
