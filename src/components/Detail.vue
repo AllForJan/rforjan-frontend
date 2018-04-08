@@ -2,7 +2,11 @@
   <div class="Detail p-3">
     <el-row>
       <el-col :span="24">
-        <h1>Detail</h1>
+        <h1 class="h5 mb-3">
+          Kulturny diel
+          <strong>{{ kulturnyDiel.lokalita }}-{{ kulturnyDiel.diel }}</strong>
+        </h1>
+
         <el-table :data="table">
           <el-table-column
             type="expand"
@@ -33,13 +37,13 @@
   export default {
     data: () => ({
       table: [
-        { 
+        {
           year: 2017,
           yearData: [
             { name: 'Nejake meno', ico: '12345', pocet_ziadosti: 2, celkova_vymera: 3.3, isPrijimatel: 'Áno' },
           ]
         },
-        { 
+        {
           year: 2018,
           yearData: [
             {name: 'name2', ico: '22345', pocet_ziadosti: 2, celkova_vymera: 3.3, isPrijimatel: '-' },
@@ -48,6 +52,7 @@
       ],
     }),
     computed: mapGetters({
+      kulturnyDiel: 'kulturnyDiel',
       data: 'ziadost',
       tableData: 'detailTableData',
     }),

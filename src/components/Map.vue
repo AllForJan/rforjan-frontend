@@ -2,7 +2,6 @@
   <div class="Map">
     <gmap-map
       class="Map__map"
-      :class="{isOpen: !!kulturnyDiel }"
       type="terrain"
       :center="center"
       :zoom="zoom"
@@ -41,7 +40,7 @@
 
     </gmap-map>
 
-    <Detail/>
+    <Detail />
   </div>
 </template>
 
@@ -121,7 +120,7 @@
           const kulturnyDiel = await Vupop.lookupKulturnyDiel(latLng)
 
           if (kulturnyDiel) {
-            const {LOKALITA: lokalita, ZKODKD: diel} = kulturnyDiel.attributes
+            const {lokalita, diel} = kulturnyDiel
 
             const parcely = await Service.getParcelyForUzemnyDiel(lokalita, diel)
             const ziadosti = await Service.getZiadostiForUzemnyDiel(lokalita, diel)
