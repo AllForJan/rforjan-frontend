@@ -11,7 +11,7 @@
     props: {
       source: true,
       bounds: true,
-      opacity: true
+      opacity: true,
     },
 
     created() {
@@ -32,6 +32,23 @@
         google.maps.event.addListener(this.$overlay, 'click', (e) => {
           google.maps.event.trigger(this.$map, 'click', e)
         })
+
+
+        //======================================todo is thare a better way to create rotated tile?
+        const rotation = -4.10;//todo from props this.props.rotation;
+        function rotateNewTile(loadTile){
+          //console.log(`Trying to roatate imageTile ${rotation}deg.`);
+          const imageTile = loadTile();
+          if(!imageTile){
+            requestAnimationFrame(()=>rotateNewTile(loadTile));
+          }else{
+            imageTile.style.transform = `rotate(${rotation}deg)`;
+          }
+        }
+        rotateNewTile(()=>document.querySelector(`img[src="${this.source}"]`));
+        //======================================
+
+
       },
 
       clearOverlay() {
