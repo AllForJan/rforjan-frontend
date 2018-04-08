@@ -17,7 +17,7 @@ export default {
       dpi: '96',
       transparent: 'true',
       format: 'png8',
-      layers: 'show:0,1,3,4,5,6,7,8,9,26',
+      layers: 'show:0,1,3,4,5,6,7,8,9',
       bbox: bbox.join(','),
       bboxSR: '102067',
       imageSR: '102067',
