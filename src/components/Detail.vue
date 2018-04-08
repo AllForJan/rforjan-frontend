@@ -1,6 +1,6 @@
 <template>
   <div class="Detail p-3">
-    <div v-if="activeView == 'entita'">
+    <div v-if="activeView == 'entita'" key="activeView">
       <div class="d-flex align-items-center mb-3">
         <h1 class="h5 mb-0">
           Detail entity
@@ -11,12 +11,11 @@
           Naspäť
         </a>
       </div>
-
       <DetailEntity :entita="entita" v-if="entita" key="entita" />
       <Spinner v-else key="entita">Nahrávam…</Spinner>
     </div>
 
-    <div v-else-if="activeView === 'kulturnyDiel'">
+    <div v-else-if="activeView === 'kulturnyDiel'" key="activeView">
       <div v-if="kulturnyDiel">
         <el-row>
           <el-col :span="24">
@@ -61,7 +60,15 @@
                 </el-table>
               </el-tab-pane>
 
-              <el-tab-pane label="Parcely s na KU" name="parcely">
+              <el-tab-pane label="Parcely " name="parcely">
+                <el-table :data="parcely">
+                  <el-table-column label="Číslo parcely" prop="parcel_number" />
+                  <el-table-column label="Majitelia">
+                    <template slot-scope="scope">
+                      <Owner :owners="scope.row.owners" />
+                    </template>
+                  </el-table-column>
+                </el-table>
               </el-tab-pane>
             </el-tabs>
           </el-col>
@@ -79,6 +86,7 @@
 
 <script>
   import { mapGetters } from 'vuex';
+  import Owner from './Owner';
 
   import Service from '../services/Service'
   import bus from '../bus'
@@ -92,6 +100,7 @@
       DetailEntity,
       Icon,
       Spinner,
+      Owner
     },
 
     data() {
