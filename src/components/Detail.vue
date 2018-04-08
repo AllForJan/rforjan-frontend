@@ -24,12 +24,13 @@
               <strong>{{ kulturnyDiel.lokalita }}-{{ kulturnyDiel.diel }}</strong>
             </h1>
 
-            <el-tabs v-model="activeTab" @tab-click="handleSelectTab">
+            <el-tabs v-model="activeTab">
               <el-tab-pane label="Žiadosti o dotácie" name="ziadatelia">
-                <el-table :data="tableData" cell-class-name="no-wrap" header-cell-class-name="no-wrap">
+
+                <el-table :data="tableData" empty-text="Žiadne záznamy" cell-class-name="no-wrap" header-cell-class-name="no-wrap">
                   <el-table-column type="expand">
-                    <template slot-scope="props">
-                      <el-table :data="props.row.yearData">
+                    <template slot-scope="scope">
+                      <el-table :data="scope.row.ziadosti">
                         <el-table-column class-name="no-break" label="Name" prop="ziadatel">
                           <template slot-scope="scope">
                             <a href @click.prevent="showEntityDetails(scope.row.entityId)">
@@ -37,14 +38,14 @@
                             </a>
                           </template>
                         </el-table-column>
-
-                        <el-table-column class-name="no-break" label="ICO" prop="ico" />
-
-                        <el-table-column class-name="no-break" label="Počet žiadosti" prop="pocet_ziadosti" />
-
-                        <el-table-column class-name="no-break" label="Celková výmera" prop="celkova_vymera" />
-
-                        <el-table-column class-name="no-break" label="Prijimatel?" prop="isPrijimatel" />
+                        <el-table-column class-name="no-break" label="IČO" prop="ico" align="center" />
+                        <el-table-column class-name="no-break" label="Počet žiadosti" prop="pocet_ziadosti" align="center" />
+                        <el-table-column class-name="no-break" label="Celková výmera" prop="celkova_vymera" align="center" />
+                        <el-table-column class-name="no-break" label="Dostáva dotáciu" align="center">
+                          <template slot-scope="scope">
+                            {{ scope.row.isPrijimatel ? 'áno' : 'nie' }}
+                          </template>
+                        </el-table-column>
                       </el-table>
                     </template>
                   </el-table-column>
@@ -53,13 +54,13 @@
 
                   <el-table-column align="center" label="Počet žiadostí">
                     <template slot-scope="scope">
-                      {{ Math.round(Math.random() * 10) }}
+                      {{ scope.row.ziadosti.length || 0 }}
                     </template>
                   </el-table-column>
                 </el-table>
               </el-tab-pane>
 
-              <el-tab-pane label="Parcely" name="parcely">
+              <el-tab-pane label="Parcely " name="parcely">
                 <el-table :data="parcely">
                   <el-table-column label="Číslo parcely" prop="parcel_number" />
                   <el-table-column label="Majitelia">
@@ -99,6 +100,7 @@
       DetailEntity,
       Icon,
       Spinner,
+      Owner
     },
 
     data() {
@@ -110,20 +112,34 @@
       }
     },
 
-    components: { Owner },
+    computed: {
+      ...mapGetters([
+        'kulturnyDiel',
+        'ziadosti'
+      ]),
 
-    computed: mapGetters({
-      kulturnyDiel: 'kulturnyDiel',
-      data: 'ziadost',
-      tableData: 'detailTableData',
-      parcely: 'parcely',
-    }),
+      tableData() {
+        const tableData = Object.entries(this.ziadosti).map(([year, ziadatel]) => {
+          const ziadosti = []
+
+          Object.entries(ziadatel).forEach(([entityId, entity]) => {
+            entity.ziadosti.forEach((ziadost) => {
+              const isPrijimatel = entity.prijimatelia.length > 0
+
+              ziadosti.push({...ziadost, entityId, isPrijimatel})
+            })
+          })
+
+          return {year, ziadosti}
+        })
+
+        tableData.sort((a, b) => b.year.localeCompare(a.year))
+
+        return tableData
+      }
+    },
 
     methods: {
-      handleSelectTab(e) {
-        console.log(e)
-      },
-
       async showEntityDetails(entityId) {
         this.activeView = 'entita'
 
