@@ -17,7 +17,7 @@
           v-for="(paths, $index) in kulturnyDiel.geometry.rings"
           :paths="paths"
           :editable="false"
-          :key="`ud{$index}`"
+          :key="`kd.${kulturnyDiel.diel}.${index}`"
           :options="{fillColor: 'yellow', strokeWeight: '1', strokeColor: 'yellow', pointerEvents: 'none'}"
         />
 
@@ -26,7 +26,7 @@
           v-for="(parcel, $index) in parcely"
           :paths="parcel.latLonShape"
           :editable="false"
-          :key="`p${$index}`"
+          :key="`p.${kulturnyDiel.diel}.${$index}`"
           :options="{strokeWeight: '1'}"
           @click="selectParcel(parcel)"
         />
