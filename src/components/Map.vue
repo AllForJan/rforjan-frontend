@@ -37,7 +37,7 @@
     </gmap-map>
 
     <div class="Map__loadingOverlay" v-if="isLoading">
-      <Spinner size="large" />
+      <Spinner size="large"/>
     </div>
 
   </div>
@@ -68,8 +68,7 @@
       MapGroundOverlay
     },
 
-    props: {
-    },
+    props: {},
 
     data() {
       return {
@@ -132,7 +131,9 @@
 
         try {
           this.kulturnyDiel = await Vupop.lookupKulturnyDiel(latLng)
-          this.parcels = await this.loadParcels(this.kulturnyDiel)
+          if (this.kulturnyDiel) {
+            this.parcels = await this.loadParcels(this.kulturnyDiel)
+          }
         } catch (e) {
           console.error(e)
         } finally {
