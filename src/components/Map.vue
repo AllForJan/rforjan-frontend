@@ -8,24 +8,38 @@
       @idle="updateOverlays($event)"
       @bounds_changed="updateBounds($event)"
       @click="handleClick($event)"
+      ref="map"
     >
-      <div v-for="geoJSON_converted in geoJSONs_converted" :key="geoJSON_converted.key">
-          <gmap-polygon :paths="geoJSON_converted.paths" :editable="false"  @click="setPoint($event)"
-          ref="polygon">
-      </gmap-polygon>
+      <div v-if="kulturnyDiel">
+        <!--Kulturne diely-->
+        <gmap-polygon
+          v-for="(paths, $index) in kulturnyDiel.geometry.rings"
+          :paths="paths"
+          :editable="false"
+          :key="`ud{$index}`"
+          :options="{fillColor: 'yellow', strokeWeight: '1', strokeColor: 'yellow', pointerEvents: 'none'}"
+        />
+
+        <!--Parcely-->
+        <gmap-polygon
+          v-for="(parcel, $index) in parcely"
+          :paths="parcel.latLonShape"
+          :editable="false"
+          :key="`p${$index}`"
+          :options="{strokeWeight: '1'}"
+          @click="selectParcel(parcel)"
+        />
       </div>
 
+      <MapGroundOverlay
+        v-if="bounds"
+        :source="vupopOverlaySrc"
+        :bounds="bounds"
+      />
     </gmap-map>
-    />
-
-    <VupopOverlay class="Map__vupopOverlay"
-      :bounds="bounds"
-      :size="{width: 986, height: 398}"
-      v-if="bounds"
-    />
 
     <div class="Map__loadingOverlay" v-if="isLoading">
-      <Spinner size="large" />
+      <Spinner size="large"/>
     </div>
 
     <router-view />
@@ -35,12 +49,11 @@
 <script>
   import {mapState, mapActions} from 'vuex'
 
-  import Geodezy from '../services/Geodezy'
-  import FakeAPI from '../services/FakeAPI'
+  import Vupop from '../services/Vupop'
   import Service from '../services/Service'
 
   import Spinner from './Spinner'
-  import VupopOverlay from './VupopOverlay'
+  import MapGroundOverlay from './MapGroundOverlay'
 
   const extractLatLng = (latLng) => ({
     lat: latLng.lat(),
@@ -55,7 +68,7 @@
   export default {
     components: {
       Spinner,
-      VupopOverlay
+      MapGroundOverlay
     },
 
     props: {},
@@ -65,64 +78,34 @@
         bounds: null,
         isLoading: false,
         center: {lat: 49.06394971960525, lng: 21.191732156604985},
-        zoom: 15,
-        markers: [{
-          position: {lat: 0, lng: 0}
-        }],
-        geoJSONs: [],
+        zoom: 15
       }
     },
 
     computed: {
       ...mapState([
-        'ziadost'
+        'kulturnyDiel',
+        'ziadost',
+        'parcely'
       ]),
 
-      geoJSONs_converted: function () {
+      mapSize() {
+        const {clientWidth: width, clientHeight: height} = this.$refs.map.$el
+        return {width, height}
+      },
 
-        return this.geoJSONs.map((geoJSON)=>{
-          const paths = geoJSON.features[0].geometry.coordinates[0].map((coordinate)=>({lat: coordinate[1], lng: coordinate[0]}));
-          return {
-            key: Math.random(),//todo better
-            paths
-          };
-        });
-
+      vupopOverlaySrc() {
+        return this.bounds && Vupop.getMapTile(extractBounds(this.bounds), this.mapSize);
       }
     },
 
     methods: {
       ...mapActions([
-        'storeZiadost'
+        'setKulturnyDiel',
       ]),
 
-      recomputeBoundaries(e) {
-        this.bounds = extractBounds(e)
-      },
-      setPoint(e){
-        const center = this.markers[0].position;
-
-
-
-        center.lat = e.latLng.lat();
-        center.lng = e.latLng.lng();
-
-        console.log(center.lat,center.lng);
-
-        this.paths=[
-          {lat: center.lat-1, lng: center.lng-1},
-          {lat: center.lat+1, lng: center.lng-1},
-          {lat: center.lat+1, lng: center.lng+1},
-          {lat: center.lat-1, lng: center.lng+1}
-        ];
-      },
-
-      updateBounds(e) {
-        const center = extractLatLng(e.getCenter())
-
-        console.log('center', center)
-
-        this.tmpBounds = extractBounds(e)
+      updateBounds(bounds) {
+        this.tmpBounds = bounds
       },
 
       updateOverlays() {
@@ -130,24 +113,34 @@
       },
 
       async handleClick(e) {
-        // this.setPoint(e);
-        // const latLng = extractLatLng(e.latLng)
-        // const result = await Geodezy.getParcel(latLng)
-        //
-        // this.geoJSONs=[await FakeAPI.getDummyGeoJSON(latLng)];
+        const latLng = extractLatLng(e.latLng)
 
-        this.isLoading = true;
+        this.isLoading = true
 
-        // const result = await Geodezy.lookParcel(latLng)
-        // console.log('result', result)
-        const dielId = '8002/1';
-        const lokalita = 'Ábelová';
+        try {
+          const kulturnyDiel = await Vupop.lookupKulturnyDiel(latLng)
 
-        const ziadosti = await Service.diel(dielId, lokalita)
-        this.storeZiadost(ziadosti);
-        const replacedId = dielId.replace('/', '-');
-        this.$router.push(`/mapa/${replacedId}`);
-        this.isLoading = false;
+          if (kulturnyDiel) {
+            const {LOKALITA: lokalita, ZKODKD: diel} = kulturnyDiel.attributes
+
+            const parcely = await Service.getParcelyForUzemnyDiel(lokalita, diel)
+            const ziadosti = await Service.getZiadostiForUzemnyDiel(lokalita, diel)
+
+            this.setKulturnyDiel({
+              kulturnyDiel,
+              parcely,
+              ziadosti,
+            });
+          }
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.isLoading = false
+        }
+      },
+
+      selectParcel(parcel) {
+        alert(parcel.parcel_number)
       }
     },
 
@@ -175,16 +168,6 @@
   .Map__map {
     flex: 1 1 auto;
     flex-flow: row;
-  }
-
-  .Map__vupopOverlay,
-  .Map__vupopOverlay.VupopOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
   }
 
   .Map__loadingOverlay {

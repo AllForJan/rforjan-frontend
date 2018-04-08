@@ -30,17 +30,12 @@
 
     data() {
       return {
-        name: '',
-        isDisabled: true
       }
     },
 
     computed: {},
 
     methods: {
-      logIn(e) {
-        this.name = e
-      }
     },
   }
 </script>
