@@ -6,3 +6,12 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.el-table__expanded-cell {
+  padding-left: .75rem !important;
+  padding-right: .75rem !important;
+}
+
+.no-wrap {
+  white-space: nowrap;
+}

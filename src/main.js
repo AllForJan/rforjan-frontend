@@ -28,6 +28,10 @@ Vue.use(VueGoogleMaps, {
   }
 })
 
+import ElementUI from 'element-ui'
+
+Vue.use(ElementUI)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
