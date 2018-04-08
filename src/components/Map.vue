@@ -2,7 +2,6 @@
   <div class="Map">
     <gmap-map
       class="Map__map"
-      :class="{isOpen: !!kulturnyDiel }"
       type="terrain"
       :center="center"
       :zoom="zoom"
@@ -18,7 +17,7 @@
           v-for="(paths, $index) in kulturnyDiel.geometry.rings"
           :paths="paths"
           :editable="false"
-          :key="`ud{$index}`"
+          :key="`kd.${kulturnyDiel.diel}.${index}`"
           :options="{fillColor: 'yellow', strokeWeight: '1', strokeColor: 'yellow', pointerEvents: 'none'}"
         />
 
@@ -27,7 +26,7 @@
           v-for="(parcel, $index) in parcely"
           :paths="parcel.latLonShape"
           :editable="false"
-          :key="`p${$index}`"
+          :key="`p.${kulturnyDiel.diel}.${$index}`"
           :options="{strokeWeight: '1'}"
           @click="selectParcel(parcel)"
         />
@@ -41,7 +40,7 @@
 
     </gmap-map>
 
-    <Detail/>
+    <Detail />
   </div>
 </template>
 
@@ -121,7 +120,7 @@
           const kulturnyDiel = await Vupop.lookupKulturnyDiel(latLng)
 
           if (kulturnyDiel) {
-            const {LOKALITA: lokalita, ZKODKD: diel} = kulturnyDiel.attributes
+            const {lokalita, diel} = kulturnyDiel
 
             const parcely = await Service.getParcelyForUzemnyDiel(lokalita, diel)
             const ziadosti = await Service.getZiadostiForUzemnyDiel(lokalita, diel)

@@ -2,7 +2,10 @@
   <div class="Detail p-3">
     <el-row>
       <el-col :span="24">
-        <h1>Detail</h1>
+        <h1 class="h5 mb-3">
+          Kulturny diel
+          <strong>{{ kulturnyDiel.lokalita }}-{{ kulturnyDiel.diel }}</strong>
+        </h1>
         <el-table :data="tableData">
           <el-table-column
             type="expand"
@@ -32,6 +35,7 @@
 
   export default {
     computed: mapGetters({
+      kulturnyDiel: 'kulturnyDiel',
       data: 'ziadost',
       tableData: 'detailTableData',
     }),
