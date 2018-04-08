@@ -17,7 +17,7 @@
           v-for="(paths, $index) in kulturnyDiel.geometry.rings"
           :paths="paths"
           :editable="false"
-          :key="`kd.${kulturnyDiel.diel}.${index}`"
+          :key="`kd.${kulturnyDiel.diel}.${$index}`"
           :options="{fillColor: 'yellow', strokeWeight: '1', strokeColor: 'yellow', pointerEvents: 'none'}"
         />
 

@@ -53,7 +53,7 @@ export default new Vuex.Store({
           personData.ziadosti.forEach(ziadost => {
             yearData.push({
               ...ziadost,
-              isPrijimatel: personData.prijimatelia.length ? 'Áno' : '-',
+              isPrijimatel: personData.prijimatelia.length ? 'Áno' : 'Nie',
             })
           });
         });
