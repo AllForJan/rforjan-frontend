@@ -25,7 +25,7 @@
               <strong>{{ kulturnyDiel.lokalita }}-{{ kulturnyDiel.diel }}</strong>
             </h1>
 
-            <el-tabs v-model="activeTab" @tab-click="handleSelectTab">
+            <el-tabs v-model="activeTab">
               <el-tab-pane label="Žiadosti o dotácie" name="ziadatelia">
 
                 <el-table :data="tableData" empty-text="Žiadne záznamy" cell-class-name="no-wrap" header-cell-class-name="no-wrap">
@@ -131,10 +131,6 @@
     },
 
     methods: {
-      handleSelectTab(e) {
-        console.log(e)
-      },
-
       async showEntityDetails(entityId) {
         this.activeView = 'entita'
 
