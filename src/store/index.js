@@ -45,17 +45,22 @@ export default new Vuex.Store({
       
       return years.map(year => {
         const personIds = Object.keys(state.ziadosti[year]);
+        const yearData = []
+        
+        personIds.forEach(personId => {
+          const personData = state.ziadosti[year][personId];
+          
+          personData.ziadosti.forEach(ziadost => {
+            yearData.push({
+              ...ziadost,
+              isPrijimatel: personData.prijimatelia.length ? 'Áno' : '-',
+            })
+          });
+        });
+
         return {
           year,
-          yearData: personIds.map(personId => {
-            const ziadatelia = state.ziadosti[year][personId].ziadosti.map(ziadost => {
-              return {
-                ...ziadost,
-                isPrijimatel: Boolean(state.ziadosti[year][personId].prijimatelia),
-              }
-            });
-            return ziadatelia;
-          }),
+          yearData,
         };
       })
     },
