@@ -115,7 +115,8 @@
     computed: {
       ...mapGetters([
         'kulturnyDiel',
-        'ziadosti'
+        'ziadosti',
+        'parcely',
       ]),
 
       tableData() {
