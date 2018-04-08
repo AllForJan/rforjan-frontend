@@ -28,7 +28,7 @@
             <el-tabs v-model="activeTab" @tab-click="handleSelectTab">
               <el-tab-pane label="Žiadosti o dotácie" name="ziadatelia">
 
-                <el-table :data="tableData" cell-class-name="no-wrap" header-cell-class-name="no-wrap">
+                <el-table :data="tableData" empty-text="Žiadne záznamy" cell-class-name="no-wrap" header-cell-class-name="no-wrap">
                   <el-table-column type="expand">
                     <template slot-scope="scope">
                       <el-table :data="scope.row.ziadosti">
@@ -39,10 +39,14 @@
                             </a>
                           </template>
                         </el-table-column>
-                        <el-table-column class-name="no-break" label="ICO" prop="ico" />
-                        <el-table-column class-name="no-break" label="Počet žiadosti" prop="pocet_ziadosti" />
-                        <el-table-column class-name="no-break" label="Celková výmera" prop="celkova_vymera" />
-                        <el-table-column class-name="no-break" label="Dostáva dotáciu" prop="isPrijimatel" />
+                        <el-table-column class-name="no-break" label="IČO" prop="ico" align="center" />
+                        <el-table-column class-name="no-break" label="Počet žiadosti" prop="pocet_ziadosti" align="center" />
+                        <el-table-column class-name="no-break" label="Celková výmera" prop="celkova_vymera" align="center" />
+                        <el-table-column class-name="no-break" label="Dostáva dotáciu" align="center">
+                          <template slot-scope="scope">
+                            {{ scope.row.isPrijimatel ? 'áno' : 'nie' }}
+                          </template>
+                        </el-table-column>
                       </el-table>
                     </template>
                   </el-table-column>
@@ -123,31 +127,6 @@
         tableData.sort((a, b) => b.year.localeCompare(a.year))
 
         return tableData
-
-        // const years = Object.keys(state.ziadosti);
-        //
-        // return years.map(year => {
-        //   const entityIds = Object.keys(state.ziadosti[year]);
-        //   const yearData = []
-        //
-        //   entityIds.forEach(entityId => {
-        //     const entityData = state.ziadosti[year][entityId];
-        //
-        //     entityData.ziadosti.forEach(ziadost => {
-        //       yearData.push({
-        //         ...ziadost,
-        //         entityId,
-        //         isPrijimatel: entityData.prijimatelia.length ? 'Áno' : 'Nie',
-        //       })
-        //     });
-        //   });
-        //
-        //   return {
-        //     year,
-        //     yearData,
-        //   };
-        // })
-
       }
     },
 

@@ -15,8 +15,6 @@ export default new Vuex.Store({
     kulturnyDiel: null,
     ziadosti: null,
     parcely: null,
-
-    ziadost: null
   },
 
   actions: {
@@ -37,34 +35,7 @@ export default new Vuex.Store({
     ziadosti: (state) => state.ziadosti,
     parcely: (state) => state.parcely,
     kulturnyDiel: (state) => state.kulturnyDiel,
-    isLoading: (state) => state.isLoading,
-
-    detailTableData: (state) => {
-      if (!state.ziadosti) return [];
-      const years = Object.keys(state.ziadosti);
-
-      return years.map(year => {
-        const entityIds = Object.keys(state.ziadosti[year]);
-        const yearData = []
-
-        entityIds.forEach(entityId => {
-          const entityData = state.ziadosti[year][entityId];
-
-          entityData.ziadosti.forEach(ziadost => {
-            yearData.push({
-              ...ziadost,
-              entityId,
-              isPrijimatel: entityData.prijimatelia.length ? 'Áno' : 'Nie',
-            })
-          });
-        });
-
-        return {
-          year,
-          yearData,
-        };
-      })
-    },
+    isLoading: (state) => state.isLoading
   },
 
   mutations: {
