@@ -39,21 +39,24 @@ export default new Vuex.Store({
     kulturnyDiel: (state) => state.kulturnyDiel,
     isLoading: (state) => state.isLoading,
 
-    ziadost: (state) => state.ziadost,
     detailTableData: (state) => {
-      if (!state.ziadost) return [];
-
-      return Object.keys(state.ziadost).map(year => {
-        const personIds = Object.keys(state.ziadost[year]);
-        const ziadosti = personIds.map(personId => {
-          const personData = {
-            ...state.ziadost[year][personId].ziadosti,
-            isPrijimatel: Boolean(state.ziadost[year][personId].prijimatelia),
-          }
-          console.log('------------------------------------');
-          console.log(personData);
-          console.log('------------------------------------');
-        });
+      if (!state.ziadosti) return [];
+      const years = Object.keys(state.ziadosti);
+      
+      return years.map(year => {
+        const personIds = Object.keys(state.ziadosti[year]);
+        return {
+          year,
+          yearData: personIds.map(personId => {
+            const ziadatelia = state.ziadosti[year][personId].ziadosti.map(ziadost => {
+              return {
+                ...ziadost,
+                isPrijimatel: Boolean(state.ziadosti[year][personId].prijimatelia),
+              }
+            });
+            return ziadatelia;
+          }),
+        };
       })
     },
   },

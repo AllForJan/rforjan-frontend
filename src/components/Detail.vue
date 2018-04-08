@@ -1,51 +1,27 @@
 <template>
   <div class="Detail">
     <el-row>
-      <!-- <el-col :span="24">
+      <el-col :span="24">
         <h1>Detail</h1>
-      <el-table>
-        <el-table-column
-          type="expand"
-          label="Year"
-          prop="year"
-        >
-        </el-table-column>
-        <el-table-column
-          label="Date"
-          prop="date">
-        </el-table-column>
-        <el-table-column
-          label="Name"
-          prop="name">
-        </el-table-column>
-      </el-table> -->
-        
-        <!-- <el-collapse v-model="expandedYears">
-          <el-collapse-item v-for="(value, key) in data" :title="key" :key="key" :name="key">
-            <el-table :data="value">
-              <el-table-column
-                prop="ico"
-                label="ICO"
-              />
-              <el-table-column
-                prop="diel"
-                label="Diel"
-              />
-            </el-table>
-          </el-collapse-item>
-        </el-collapse> -->
-
-        <!-- <ul>
-          <li v-for="(value, key) in data" :key="key">
-            {{key}}
-            <el-table :data="value">
-              <el-table-column
-                prop="ico"
-                label="ICO"
-              />
-            </el-table>
-          </li>
-        </ul> -->
+        <el-table :data="table">
+          <el-table-column
+            type="expand"
+          >
+            <template slot-scope="props">
+              <el-table :data="props.row.yearData">
+                <el-table-column label="Name" prop="name" />
+                <el-table-column label="ICO" prop="ico" />
+                <el-table-column label="Počet žiadosti" prop="pocet_ziadosti" />
+                <el-table-column label="Celková výmera" prop="celkova_vymera" />
+                <el-table-column label="Prijimatel?" prop="isPrijimatel" />
+              </el-table>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="Rok"
+            prop="year"
+          />
+        </el-table>
       </el-col>
     </el-row>
   </div>
@@ -55,6 +31,22 @@
   import { mapGetters } from 'vuex';
   
   export default {
+    data: () => ({
+      table: [
+        { 
+          year: 2017,
+          yearData: [
+            { name: 'Nejake meno', ico: '12345', pocet_ziadosti: 2, celkova_vymera: 3.3, isPrijimatel: 'Áno' },
+          ]
+        },
+        { 
+          year: 2018,
+          yearData: [
+            {name: 'name2', ico: '22345', pocet_ziadosti: 2, celkova_vymera: 3.3, isPrijimatel: '-' },
+          ]
+        },
+      ],
+    }),
     computed: mapGetters({
       data: 'ziadost',
       tableData: 'detailTableData',
