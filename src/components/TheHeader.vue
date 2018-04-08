@@ -18,13 +18,25 @@
           </router-link>
         </div>
       </div>
+
+      <div class="ml-auto text-white">
+        <Spinner :is-white="true" v-if="isLoading">
+          Kľud, robim…
+        </Spinner>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
+  import Spinner from './Spinner'
+
   export default {
-    components: {},
+    components: {
+      Spinner
+    },
 
     props: {},
 
@@ -33,7 +45,11 @@
       }
     },
 
-    computed: {},
+    computed: {
+      ...mapGetters([
+        'isLoading'
+      ])
+    },
 
     methods: {
     },

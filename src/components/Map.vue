@@ -10,6 +10,7 @@
       @click="handleClick($event)"
       ref="map"
     >
+
       <div v-if="kulturnyDiel">
         <!--Kulturne diely-->
         <gmap-polygon
@@ -36,11 +37,8 @@
         :source="vupopOverlaySrc"
         :bounds="bounds"
       />
-    </gmap-map>
 
-    <div class="Map__loadingOverlay" v-if="isLoading">
-      <Spinner size="large"/>
-    </div>
+    </gmap-map>
 
     <router-view />
   </div>
@@ -76,7 +74,6 @@
     data() {
       return {
         bounds: null,
-        isLoading: false,
         center: {lat: 49.06394971960525, lng: 21.191732156604985},
         zoom: 15
       }
@@ -86,7 +83,8 @@
       ...mapState([
         'kulturnyDiel',
         'ziadost',
-        'parcely'
+        'parcely',
+        'isLoading'
       ]),
 
       mapSize() {
@@ -102,6 +100,7 @@
     methods: {
       ...mapActions([
         'setKulturnyDiel',
+        'setLoading'
       ]),
 
       updateBounds(bounds) {
@@ -115,7 +114,7 @@
       async handleClick(e) {
         const latLng = extractLatLng(e.latLng)
 
-        this.isLoading = true
+        this.setLoading(true)
 
         try {
           const kulturnyDiel = await Vupop.lookupKulturnyDiel(latLng)
@@ -135,7 +134,7 @@
         } catch (e) {
           console.error(e)
         } finally {
-          this.isLoading = false
+          this.setLoading(false)
         }
       },
 
@@ -145,11 +144,7 @@
     },
 
     mounted() {
-      this.isLoading = true;
-
-      setTimeout(() => {
-        this.isLoading = false
-      }, 1000)
+      this.setLoading(false)
     }
   }
 </script>
