@@ -64,6 +64,9 @@ export default {
       return
     }
 
+    // Decorate data
+    kulturnyDiel.lokalita = kulturnyDiel.attributes.LOKALITA
+    kulturnyDiel.diel = kulturnyDiel.attributes.ZKODKD
     kulturnyDiel.geometry.rings = kulturnyDiel.geometry.rings.map((ring) => {
       return ring.map((coordinates) => {
         const [x, y] = coordinates
