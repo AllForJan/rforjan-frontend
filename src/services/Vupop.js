@@ -39,8 +39,6 @@ export default {
       -1181758.0868092705
     ].join(',')
 
-    console.log(geometry)
-
     const params = {
       geometry,
       mapExtent,

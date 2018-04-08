@@ -27,10 +27,11 @@
 
             <el-tabs v-model="activeTab" @tab-click="handleSelectTab">
               <el-tab-pane label="Žiadosti o dotácie" name="ziadatelia">
+
                 <el-table :data="tableData" cell-class-name="no-wrap" header-cell-class-name="no-wrap">
                   <el-table-column type="expand">
-                    <template slot-scope="props">
-                      <el-table :data="props.row.yearData">
+                    <template slot-scope="scope">
+                      <el-table :data="scope.row.ziadosti">
                         <el-table-column class-name="no-break" label="Name" prop="ziadatel">
                           <template slot-scope="scope">
                             <a href @click.prevent="showEntityDetails(scope.row.entityId)">
@@ -38,14 +39,10 @@
                             </a>
                           </template>
                         </el-table-column>
-
                         <el-table-column class-name="no-break" label="ICO" prop="ico" />
-
                         <el-table-column class-name="no-break" label="Počet žiadosti" prop="pocet_ziadosti" />
-
                         <el-table-column class-name="no-break" label="Celková výmera" prop="celkova_vymera" />
-
-                        <el-table-column class-name="no-break" label="Prijimatel?" prop="isPrijimatel" />
+                        <el-table-column class-name="no-break" label="Dostáva dotáciu" prop="isPrijimatel" />
                       </el-table>
                     </template>
                   </el-table-column>
@@ -54,14 +51,13 @@
 
                   <el-table-column align="center" label="Počet žiadostí">
                     <template slot-scope="scope">
-                      {{ Math.round(Math.random() * 10) }}
+                      {{ scope.row.ziadosti.length || 0 }}
                     </template>
                   </el-table-column>
                 </el-table>
               </el-tab-pane>
 
               <el-tab-pane label="Parcely s na KU" name="parcely">
-
               </el-tab-pane>
             </el-tabs>
           </el-col>
@@ -103,11 +99,57 @@
       }
     },
 
-    computed: mapGetters({
-      kulturnyDiel: 'kulturnyDiel',
-      data: 'ziadost',
-      tableData: 'detailTableData',
-    }),
+    computed: {
+      ...mapGetters([
+        'kulturnyDiel',
+        'ziadosti'
+      ]),
+
+      tableData() {
+        const tableData = Object.entries(this.ziadosti).map(([year, ziadatel]) => {
+          const ziadosti = []
+
+          Object.entries(ziadatel).forEach(([entityId, entity]) => {
+            entity.ziadosti.forEach((ziadost) => {
+              const isPrijimatel = entity.prijimatelia.length > 0
+
+              ziadosti.push({...ziadost, entityId, isPrijimatel})
+            })
+          })
+
+          return {year, ziadosti}
+        })
+
+        tableData.sort((a, b) => b.year.localeCompare(a.year))
+
+        return tableData
+
+        // const years = Object.keys(state.ziadosti);
+        //
+        // return years.map(year => {
+        //   const entityIds = Object.keys(state.ziadosti[year]);
+        //   const yearData = []
+        //
+        //   entityIds.forEach(entityId => {
+        //     const entityData = state.ziadosti[year][entityId];
+        //
+        //     entityData.ziadosti.forEach(ziadost => {
+        //       yearData.push({
+        //         ...ziadost,
+        //         entityId,
+        //         isPrijimatel: entityData.prijimatelia.length ? 'Áno' : 'Nie',
+        //       })
+        //     });
+        //   });
+        //
+        //   return {
+        //     year,
+        //     yearData,
+        //   };
+        // })
+
+      }
+    },
 
     methods: {
       handleSelectTab(e) {
