@@ -1,15 +1,15 @@
-import HomeScreen from '../views/HomeScreen'
 import MapView from '../views/MapView'
+import PageNotFound from '../views/PageNotFound'
 
 export default [
   {
     path: '/',
-    name: 'home',
-    component: HomeScreen
-  },
-  {
-    path: '/mapa',
     name: 'map',
-    component: MapView,
+    component: MapView
+  },
+
+  {
+    path: '*',
+    component: PageNotFound
   }
 ]

@@ -1,20 +1,14 @@
 <template>
   <div class="TheHeader">
     <div class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <router-link class="navbar-brand" :to="{name: 'home'}">
+      <router-link class="navbar-brand" :to="{name: 'map'}">
         #RFORJAN
       </router-link>
 
       <div class="navbar-nav">
         <div class="nav-item">
-          <router-link class="nav-link" :to="{name: 'home'}">
-            Home
-          </router-link>
-        </div>
-
-        <div class="nav-item">
           <router-link class="nav-link" :to="{name: 'map'}">
-            Map view
+            Mapa kultúrnych dielov
           </router-link>
         </div>
       </div>
