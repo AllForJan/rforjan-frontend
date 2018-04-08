@@ -2,8 +2,8 @@ import {convert4326To5514, convert5514To4326} from '../utils/converter'
 import {stringifyQueryParams} from '../utils/makeUrl'
 import axios from 'axios'
 
-const KULTURNE_DIELY_URL = 'http://portal.vupop.sk/arcgis/rest/services/LPIS/Kulturne_diely/MapServer'
-const VEREJNOST_URL = 'http://portal.vupop.sk/arcgis/rest/services/LPIS/LPIS_verejnost/MapServer'
+const KULTURNE_DIELY_URL = 'https://portal.vupop.sk/arcgis/rest/services/LPIS/Kulturne_diely/MapServer'
+const VEREJNOST_URL = 'https://portal.vupop.sk/arcgis/rest/services/LPIS/LPIS_verejnost/MapServer'
 
 export default {
   getMapTile(bounds, size) {
