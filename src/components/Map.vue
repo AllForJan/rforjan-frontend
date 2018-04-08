@@ -50,7 +50,6 @@
   import Vupop from '../services/Vupop'
   import Service from '../services/Service'
 
-  import Spinner from './Spinner'
   import MapGroundOverlay from './MapGroundOverlay'
 
   const extractLatLng = (latLng) => ({
@@ -65,7 +64,6 @@
 
   export default {
     components: {
-      Spinner,
       MapGroundOverlay
     },
 
