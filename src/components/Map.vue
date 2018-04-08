@@ -136,6 +136,8 @@
         //
         // this.geoJSONs=[await FakeAPI.getDummyGeoJSON(latLng)];
 
+        this.isLoading = true;
+
         // const result = await Geodezy.lookParcel(latLng)
         // console.log('result', result)
         const dielId = '8002/1';
@@ -145,6 +147,7 @@
         this.storeZiadost(ziadosti);
         const replacedId = dielId.replace('/', '-');
         this.$router.push(`/mapa/${replacedId}`);
+        this.isLoading = false;
       }
     },
 

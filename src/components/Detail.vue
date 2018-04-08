@@ -1,9 +1,26 @@
 <template>
   <div class="Detail">
     <el-row>
-      <el-col :span="24">
+      <!-- <el-col :span="24">
         <h1>Detail</h1>
-        <el-collapse v-model="expandedYears">
+      <el-table>
+        <el-table-column
+          type="expand"
+          label="Year"
+          prop="year"
+        >
+        </el-table-column>
+        <el-table-column
+          label="Date"
+          prop="date">
+        </el-table-column>
+        <el-table-column
+          label="Name"
+          prop="name">
+        </el-table-column>
+      </el-table> -->
+        
+        <!-- <el-collapse v-model="expandedYears">
           <el-collapse-item v-for="(value, key) in data" :title="key" :key="key" :name="key">
             <el-table :data="value">
               <el-table-column
@@ -16,7 +33,7 @@
               />
             </el-table>
           </el-collapse-item>
-        </el-collapse>
+        </el-collapse> -->
 
         <!-- <ul>
           <li v-for="(value, key) in data" :key="key">
@@ -38,11 +55,9 @@
   import { mapGetters } from 'vuex';
   
   export default {
-    data: {
-      expandedYears: [],
-    },
     computed: mapGetters({
       data: 'ziadost',
+      tableData: 'detailTableData',
     }),
   }
 </script>
