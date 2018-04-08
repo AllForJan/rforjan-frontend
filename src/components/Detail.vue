@@ -1,5 +1,5 @@
 <template>
-  <div class="Detail">
+  <div class="Detail p-3">
     <el-row>
       <!-- <el-col :span="24">
         <h1>Detail</h1>
@@ -19,7 +19,7 @@
           prop="name">
         </el-table-column>
       </el-table> -->
-        
+
         <!-- <el-collapse v-model="expandedYears">
           <el-collapse-item v-for="(value, key) in data" :title="key" :key="key" :name="key">
             <el-table :data="value">
@@ -53,7 +53,7 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  
+
   export default {
     computed: mapGetters({
       data: 'ziadost',
