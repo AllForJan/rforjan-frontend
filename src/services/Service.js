@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const API_BASE_PYHTON = 'http://67.207.78.161:3333'
-const API_BASE_RAILS = 'http://67.207.78.161:4000'
+const API_BASE_PYHTON = 'http://95.85.50.131:3333'
+const API_BASE_RAILS = 'http://95.85.50.131:4000'
 
 export default {
   async getParcelyForUzemnyDiel(lokalita, diel) {
