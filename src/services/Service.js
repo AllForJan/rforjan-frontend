@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_PYHTON = 'http://67.207.78.161:3333'
+const API_BASE_PYHTON = 'http://67.207.78.161:4100'
 const API_BASE_RAILS = 'http://67.207.78.161:4000'
 
 export default {
